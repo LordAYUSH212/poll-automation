@@ -1,4 +1,4 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import Question from '../web/models/question.model';
 // import HostSettings from '../models/HostSettings';
 
@@ -127,4 +127,18 @@ export const getSocketInstance = () => {
     throw new Error('Socket.IO server not initialized');
   }
   return io;
+};
+
+export const handleStudentConnection = (socket: Socket) => {
+  console.log('Student connected:', socket.id);
+
+  // Handle student-specific events
+  socket.on('join-poll', (pollId: string) => {
+    socket.join(`poll-${pollId}`);
+    console.log(`Student ${socket.id} joined poll ${pollId}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Student disconnected:', socket.id);
+  });
 };
